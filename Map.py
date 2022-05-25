@@ -1,3 +1,5 @@
+from Edge import *
+from Vertex import *
 from Lattice import *
 import random
 
@@ -7,6 +9,8 @@ class Map:
         self.map_type = map_type
         self.size = size
         self.grid = self.generate_grid()
+        self.vertices = self.generate_vertices()
+        self.edges = self.generate_edges()
         self.generate_map()
 
     def __str__(self):
@@ -75,31 +79,17 @@ class Map:
         return []
 
     def generate_grid(self):
-        # x: blue
-        # y: green
-        # z: red
-        radius = self.size - 1
+        d = self.size * 2 - 1
         grid = {}
+        for y in range(self.size):
+            if y == 0:
+                for x in range(d):
+                    grid[(x, y)] = Lattice(x, y)
+                continue
 
-        for i in range(radius):
-            length = self.size + i
-            for j in range(length):
-                x = i - radius
-                y = radius - j
-                z = j - i
-
-                # lower region
-                grid[(x, y, z)] = Lattice(x, y, z)
-
-                # upper region
-                grid[(-x, -y, -z)] = Lattice(-x, -y, -z)
-
-        # middle region
-        for i in range(radius * 2 + 1):
-            x = 0
-            z = i - radius
-            y = -z
-            grid[(x, y, z)] = Lattice(x, y, z)
+            for x in range(d - y):
+                grid[(x, y)] = Lattice(x, y)
+                grid[(x, -y)] = Lattice(x, -y)
 
         return grid
 
@@ -110,7 +100,33 @@ class Map:
             total += (self.size + i) * 2
         return total
 
+    def generate_vertices(self):
+        result = {}
+        for key in self.grid:
+            for n in range(6):
+                vertex = Vertex(key, n)
+                result[vertex.sign] = vertex
+        return result
 
-m = Map(4, 0)
-print(str(m))
+    def join_vertices(self):
+
+        return
+
+    def generate_edges(self):
+        result = {}
+        for key in self.grid:
+            for n in range(6):
+                sign1 = (key[0], key[1], n)
+                sign2 = (key[0], key[1], (n + 1) % 6)
+                vertex1 = self.vertices[sign1].find_root()
+                vertex2 = self.vertices[sign2].find_root()
+
+                if (vertex1, vertex2) in result or (vertex2, vertex1) in result:
+                    continue
+
+                result[(vertex1, vertex2)] = Edge(self.vertices[vertex1], self.vertices[vertex2])
+
+        return result
+
+
 
