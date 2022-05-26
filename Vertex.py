@@ -13,11 +13,14 @@ class Vertex:
         self.unionSign = other.sign
         self.union = other
 
-    def find_root(self):
-        if self.sign == self.union:
-            return self.sign
+    def find_root_vertex(self):
+        if self.sign == self.unionSign:
+            return self
 
         root = self.union
         while root.unionSign != root.sign:
             root = root.union
-        return root.sign
+        return root
+
+    def find_root_sign(self):
+        return self.find_root_vertex().sign

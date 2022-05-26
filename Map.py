@@ -10,6 +10,7 @@ class Map:
         self.size = size
         self.grid = self.generate_grid()
         self.vertices = self.generate_vertices()
+        self.join_vertices()
         self.edges = self.generate_edges()
         self.generate_map()
 
@@ -38,7 +39,7 @@ class Map:
     def generate_numbers(self):
         if self.map_type == 0:
             result = []
-            total = self.get_total() - 2
+            total = self.get_total_lattice() - 2
             each = total // 10
             remain = total % 10
             for i in range(2, 13):
@@ -59,7 +60,7 @@ class Map:
     def generate_resources(self):
         if self.map_type == 0:
             result = []
-            total = self.get_total() - 2
+            total = self.get_total_lattice() - 2
             each = total // 5
             remain = total % 5
             res_list = ["CLAY", "ORE", "WHEAT", "SHEEP", "WOOD"]
@@ -93,12 +94,19 @@ class Map:
 
         return grid
 
-    def get_total(self):
+    def get_total_lattice(self):
         radius = self.size - 1
         total = radius * 2 + 1
         for i in range(radius):
             total += (self.size + i) * 2
         return total
+
+    def get_total_edges(self):
+        total = 0
+        d = self.size * 2 - 1
+        for i in range(self.size, d + 1):
+            total += 3 * i + 1
+        return total * 2 - d - 1
 
     def generate_vertices(self):
         result = {}
@@ -109,8 +117,39 @@ class Map:
         return result
 
     def join_vertices(self):
+        vertices = self.vertices
+        for key in vertices:
+            if key[2] == 0:
+                if key[1] >= 0 and (key[0], key[1] + 1) in self.grid:
+                    vertices[(key[0], key[1] + 1, 4)].join(vertices[key])
+                elif key[1] < 0 and (key[0] + 1, key[1] + 1) in self.grid:
+                    vertices[(key[0] + 1, key[1] + 1, 4)].join(vertices[key])
 
-        return
+            elif key[2] == 1:
+                if key[1] >= 0:
+                    if (key[0], key[1] + 1) in self.grid:
+                        vertices[(key[0], key[1] + 1, 3)].join(vertices[key])
+                    elif (key[0] + 1, key[1]) in self.grid:
+                        vertices[(key[0] + 1, key[1], 5)].join(vertices[key])
+
+                elif key[1] < 0 and (key[0] + 1, key[1] + 1) in self.grid:
+                    vertices[(key[0] + 1, key[1] + 1, 3)].join(vertices[key])
+
+            elif key[2] == 2:
+                if key[1] > 0 and (key[0] + 1, key[1] - 1) in self.grid:
+                    vertices[(key[0] + 1, key[1] - 1, 0)].join(vertices[key])
+
+                elif key[1] <= 0:
+                    if (key[0], key[1] - 1) in self.grid:
+                        vertices[(key[0], key[1] - 1, 0)].join(vertices[key])
+                    elif (key[0] + 1, key[1]) in self.grid:
+                        vertices[(key[0] + 1, key[1], 4)].join(vertices[key])
+
+            elif key[2] == 3:
+                if key[1] > 0 and (key[0] + 1, key[1] - 1) in self.grid:
+                    vertices[(key[0] + 1, key[1] - 1, 5)].join(vertices[key])
+                elif key[1] <= 0 and (key[0], key[1] - 1) in self.grid:
+                    vertices[(key[0], key[1] - 1, 5)].join(vertices[key])
 
     def generate_edges(self):
         result = {}
@@ -118,8 +157,8 @@ class Map:
             for n in range(6):
                 sign1 = (key[0], key[1], n)
                 sign2 = (key[0], key[1], (n + 1) % 6)
-                vertex1 = self.vertices[sign1].find_root()
-                vertex2 = self.vertices[sign2].find_root()
+                vertex1 = self.vertices[sign1].find_root_sign()
+                vertex2 = self.vertices[sign2].find_root_sign()
 
                 if (vertex1, vertex2) in result or (vertex2, vertex1) in result:
                     continue
@@ -127,6 +166,3 @@ class Map:
                 result[(vertex1, vertex2)] = Edge(self.vertices[vertex1], self.vertices[vertex2])
 
         return result
-
-
-
