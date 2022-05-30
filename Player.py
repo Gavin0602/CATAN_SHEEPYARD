@@ -1,7 +1,3 @@
-from Vertex import *
-from Edge import *
-
-
 class Player:
     def __init__(self, name):
         self.name = name
@@ -108,3 +104,16 @@ class Player:
             if found_next:
                 length += 1
         return length
+
+    def get_point(self):
+        return len(self.house) + len(self.city) * 2
+
+    def move(self, others):
+        while True:
+            print("1\tbuild house")
+            print("2\tbuild road")
+            print("3\tbuild city")
+            print("0\tend turn")
+            choice = input("Your choice: ")
+            if choice == "1":
+                vertex = input("select your vertex:")

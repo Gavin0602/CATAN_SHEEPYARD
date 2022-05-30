@@ -8,10 +8,17 @@ class Map:
     def __init__(self, size, map_type):
         self.map_type = map_type
         self.size = size
+
+        # {(x, y) : Lattice}
         self.grid = self.generate_grid()
+
+        # {(x, y, n) : Vertex}
         self.vertices = self.generate_vertices()
         self.join_vertices()
+
+        # {(vertex1_sign, vertex2_sign) : Edge}
         self.edges = self.generate_edges()
+
         self.generate_map()
 
     def __str__(self):
@@ -166,3 +173,16 @@ class Map:
                 result[(vertex1, vertex2)] = Edge(self.vertices[vertex1], self.vertices[vertex2])
 
         return result
+
+    def get_resources(self, vertex: Vertex):
+        result = []
+        root_sign = vertex.find_root_sign()
+        for sign in self.vertices:
+            v = self.vertices[sign]
+            root = v.find_root_sign()
+            if root == root_sign:
+                resource = self.grid[v.lattice].resources
+                if resource != "None":
+                    result.append(resource)
+        return result
+
