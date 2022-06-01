@@ -36,11 +36,12 @@ class Map:
         n = 0
         # fill in resources and numbers
         for pos in grid:
+            lattice = grid[pos]
             resource = res_list[r]
-            grid[pos].resources = resource
+            lattice.set_resource(resource)
             r += 1
             if resource != "SAND":
-                grid[pos].num = num_list[n]
+                lattice.set_number(num_list[n])
                 n += 1
 
     def generate_numbers(self):
@@ -181,8 +182,7 @@ class Map:
             v = self.vertices[sign]
             root = v.find_root_sign()
             if root == root_sign:
-                resource = self.grid[v.lattice].resources
-                if resource != "None":
+                resource = self.grid[v.lattice].resource
+                if resource != "SAND":
                     result.append(resource)
         return result
-

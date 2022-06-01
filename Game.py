@@ -28,9 +28,7 @@ class Game:
                 player.vertices.append(edge.i1)
             if edge.i2 not in player.vertices:
                 player.vertices.append(edge.i2)
-            res = self.map.get_resources(vertex)
-            if res != "SAND":
-                player.resources += res
+            player.resources += self.map.get_resources(vertex)
 
     def start(self):
         print(self.map)
@@ -46,7 +44,7 @@ class Game:
             number = self.dice.roll()
             print("Dice = " + str(number))
             if number != 7:
-                self.get_resources(number)
+                self.add_resources(number)
             while True:
                 print(player.name + "'s turn")
                 print("1\tbuild house")
@@ -158,7 +156,7 @@ class Game:
 
             print("edge not in map")
 
-    def get_resources(self, number):
+    def add_resources(self, number):
         grid = self.map.grid
         for key in grid:
             lattice = grid[key]
@@ -168,8 +166,7 @@ class Game:
                     vertex = self.map.vertices[vertex_sign].find_root_vertex()
                     for player in self.players:
                         if vertex in player.house:
-                            player.resources += lattice.resources
+                            player.resources += lattice.resource
                         elif vertex in player.city:
-                            player.resources += lattice.resources
-                            player.resources += lattice.resources
-
+                            player.resources += lattice.resource
+                            player.resources += lattice.resource

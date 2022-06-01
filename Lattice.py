@@ -4,14 +4,14 @@ class Lattice:
         self.y = y
         self.sign = (x, y)
         self.num = 0
-        self.resources = "None"
+        self.resource = "None"
         self.isRobbed = False
 
     def __str__(self):
-        return "[" + str(self.x) + "," + str(self.y) + "] (" + str(self.num) + ", " + self.resources + ")"
+        return "[" + str(self.x) + "," + str(self.y) + "] (" + str(self.num) + ", " + self.resource + ")"
 
     def set_number(self, num):
         self.num = num
 
-    def set_resources(self, res):
-        self.resources = res
+    def set_resource(self, res):
+        self.resource = res
