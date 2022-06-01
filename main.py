@@ -1,14 +1,18 @@
 from DrawMap import *
-from Map import *
+from Game import *
 
 
-map_size = 5
-map_type = 0
-length = 30
+MAP_SIZE = 4
+GAME_TYPE = 0
 
-m = Map(map_size, map_type)
 
-print(len(m.edges))
-print(m.get_total_edges())
-print(m.edges)
-# draw_map(map_size, length)
+MAP = Map(MAP_SIZE, GAME_TYPE)
+DICE = Dice(GAME_TYPE)
+PLAYER1 = Player("player1")
+PLAYER2 = Player("player2")
+# PLAYER3 = Player("player3")
+# PLAYER4 = Player("player4")
+PLAYERS = [PLAYER1, PLAYER2]
+
+GAME = Game(PLAYERS, MAP, DICE)
+GAME.start()

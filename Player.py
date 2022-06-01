@@ -10,6 +10,18 @@ class Player:
     def __str__(self):
         return self.name
 
+    def information(self):
+        result = "resources: " + str(self.resources) + "\nhouses: "
+        for house in self.house:
+            result += str(house) + " "
+        result += "\nroads: "
+        for edge in self.road:
+            result += str(edge) + " "
+        result += "\ncities: "
+        for city in self.city:
+            result += str(city) + " "
+        return result
+
     def build_road(self, edge, others):
         if self.resources.count("CLAY") < 1 or self.resources.count("WOOD") < 1:
             print("not enough resources")
@@ -107,13 +119,3 @@ class Player:
 
     def get_point(self):
         return len(self.house) + len(self.city) * 2
-
-    def move(self, others):
-        while True:
-            print("1\tbuild house")
-            print("2\tbuild road")
-            print("3\tbuild city")
-            print("0\tend turn")
-            choice = input("Your choice: ")
-            if choice == "1":
-                vertex = input("select your vertex:")

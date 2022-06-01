@@ -28,9 +28,12 @@ class Game:
                 player.vertices.append(edge.i1)
             if edge.i2 not in player.vertices:
                 player.vertices.append(edge.i2)
-            player.resources += self.map.get_resources(vertex)
+            res = self.map.get_resources(vertex)
+            if res != "SAND":
+                player.resources += res
 
     def start(self):
+        print(self.map)
         self.before_game(self.players)
         self.players.reverse()
         self.before_game(self.players)
@@ -40,10 +43,16 @@ class Game:
             player = self.players[self.turn % len(self.players)]
             others = self.players[:]
             others.remove(player)
+            number = self.dice.roll()
+            print("Dice = " + str(number))
+            if number != 7:
+                self.get_resources(number)
             while True:
+                print(player.name + "'s turn")
                 print("1\tbuild house")
                 print("2\tbuild road")
                 print("3\tbuild city")
+                print("4\tcheck resources and map")
                 print("0\tend turn")
                 choice = input("Your choice: ")
 
@@ -55,6 +64,10 @@ class Game:
 
                 elif choice == "3":
                     player.build_city(self.select_vertex())
+
+                elif choice == "4":
+                    print(player.information())
+                    print(self.map)
 
                 elif choice == "0":
                     break
@@ -70,9 +83,11 @@ class Game:
         road_list = []
         for player in self.players:
             length = player.longest_road()
+            print("length = " + str(length))
             road_board[player] = length
             road_list.append(length)
-        longest = road_board[max(road_list)]
+
+        longest = max(road_list)
         longest_player = []
         for player in road_board:
             if road_board[player] == longest:
@@ -88,20 +103,22 @@ class Game:
     def no_man_vertex(self, vertex):
         for player in self.players:
             if vertex in player.house or vertex in player.city:
-                print("vertex already selected by player " + player.name)
+                print("vertex already selected by player: " + player.name)
                 return False
         return True
 
     def no_man_road(self, edge):
         for player in self.players:
             if edge in player.road:
-                print("edge already selected by player " + player.name)
+                print("edge already selected by player: " + player.name)
                 return False
         return True
 
     def select_vertex(self):
         while True:
-            vertex_sign = tuple(input("select vertex"))
+            in_str = input("select vertex:")
+            pos = in_str.split(",")
+            vertex_sign = (int(pos[0]), int(pos[1]), int(pos[2]))
             if vertex_sign in self.map.vertices:
                 vertex = self.map.vertices[vertex_sign].find_root_vertex()
                 if self.no_man_vertex(vertex):
@@ -112,8 +129,18 @@ class Game:
 
     def select_road(self):
         while True:
-            vertex1_sign = tuple(input("select vertex1"))
-            vertex2_sign = tuple(input("select vertex2"))
+            print("select road")
+
+            # get first vertex
+            in_str = input("select vertex1:")
+            pos = in_str.split(",")
+            vertex1_sign = (int(pos[0]), int(pos[1]), int(pos[2]))
+
+            # get second vertex
+            in_str = input("select vertex2:")
+            pos = in_str.split(",")
+            vertex2_sign = (int(pos[0]), int(pos[1]), int(pos[2]))
+
             if vertex1_sign in self.map.vertices and vertex2_sign in self.map.vertices:
                 vertex1 = self.map.vertices[vertex1_sign].find_root_vertex()
                 vertex2 = self.map.vertices[vertex2_sign].find_root_vertex()
@@ -130,3 +157,19 @@ class Game:
                 continue
 
             print("edge not in map")
+
+    def get_resources(self, number):
+        grid = self.map.grid
+        for key in grid:
+            lattice = grid[key]
+            if lattice.num == number and not lattice.isRobbed:
+                for n in range(6):
+                    vertex_sign = (lattice.x, lattice.y, n)
+                    vertex = self.map.vertices[vertex_sign].find_root_vertex()
+                    for player in self.players:
+                        if vertex in player.house:
+                            player.resources += lattice.resources
+                        elif vertex in player.city:
+                            player.resources += lattice.resources
+                            player.resources += lattice.resources
+

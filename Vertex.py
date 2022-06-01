@@ -15,7 +15,7 @@ class Vertex:
         self.union = self
 
     def __str__(self):
-        return str(self.sign) + "->" + str(self.union)
+        return str(self.sign) + "->" + str(self.union.sign)
 
     def join(self, other):
         self.unionSign = other.sign
