@@ -43,3 +43,85 @@ def draw_map(map_size, size):
         draw_hex_line(x, -y, n, size)
     done()
     print("done")
+
+
+def draw_circle(r, c):
+    speed(0)
+    penup()
+    right(90)
+    forward(r)
+    left(90)
+    pendown()
+    color(c)
+    circle(r)
+    penup()
+    left(90)
+    forward(r)
+    right(90)
+
+
+def goto_vertex(vertex, length, size):
+    x = vertex[0]
+    y = vertex[1]
+    n = vertex[2]
+    x_coordinate = (x - size + 1 + 0.5 * abs(y)) * (length * math.sqrt(3))
+    y_coordinate = length * y * 1.5
+
+    speed(0)
+    penup()
+    goto(x_coordinate, y_coordinate)
+    if n == 0:
+        left(90)
+        forward(length)
+        right(90)
+    elif n == 1:
+        left(30)
+        forward(length)
+        right(30)
+    elif n == 2:
+        right(30)
+        forward(length)
+        left(30)
+    elif n == 3:
+        right(90)
+        forward(length)
+        left(90)
+    elif n == 4:
+        right(150)
+        forward(length)
+        left(150)
+    elif n == 5:
+        left(150)
+        forward(length)
+        right(150)
+    return pos()
+
+
+def draw_vertex(vertex, length, size):
+    goto_vertex(vertex, length, size)
+    draw_circle(0.1 * length, "green")
+
+
+def draw_edge(edge, length, size):
+    v1 = edge[0]
+    v2 = edge[1]
+    pos1 = goto_vertex(v1, length, size)
+    pos2 = goto_vertex(v2, length, size)
+    penup()
+    goto(pos1)
+    pendown()
+    color("red")
+    goto(pos2)
+    penup()
+
+
+def detail_map(game_map, length):
+    speed(0)
+    vertices = game_map.top_vertices
+    edges = game_map.edges
+    size = game_map.size
+    for sign in vertices:
+        draw_vertex(sign, length, size)
+    for edge in edges:
+        draw_edge(edge, length, size)
+

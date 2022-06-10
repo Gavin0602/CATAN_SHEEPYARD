@@ -14,6 +14,7 @@ class Map:
 
         # {(x, y, n) : Vertex}
         self.vertices = self.generate_vertices()
+        self.top_vertices = []
         self.join_vertices()
 
         # {(vertex1_sign, vertex2_sign) : Edge}
@@ -158,6 +159,11 @@ class Map:
                     vertices[(key[0] + 1, key[1] - 1, 5)].join(vertices[key])
                 elif key[1] <= 0 and (key[0], key[1] - 1) in self.grid:
                     vertices[(key[0], key[1] - 1, 5)].join(vertices[key])
+
+        for vertex in self.vertices:
+            root = self.vertices[vertex].find_root_sign()
+            if root not in self.top_vertices:
+                self.top_vertices.append(root)
 
     def generate_edges(self):
         result = {}

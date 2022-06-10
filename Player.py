@@ -59,11 +59,16 @@ class Player:
                 print("conflict place, conflict to player: " + str(other))
                 return
 
+        if vertex not in self.vertices:
+            print("no valid connection")
+            return
+
         self.resources.remove("CLAY")
         self.resources.remove("SHEEP")
         self.resources.remove("WHEAT")
         self.resources.remove("WOOD")
         self.house.append(vertex)
+
         print("successful")
 
     def build_city(self, vertex):
@@ -119,3 +124,7 @@ class Player:
 
     def get_point(self):
         return len(self.house) + len(self.city) * 2
+
+    def add_resources(self, res, n):
+        for i in range(n):
+            self.resources.append(res)

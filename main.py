@@ -15,4 +15,6 @@ PLAYER2 = Player("player2")
 PLAYERS = [PLAYER1, PLAYER2]
 
 GAME = Game(PLAYERS, MAP, DICE)
-GAME.start()
+# GAME.start()
+detail_map(MAP, 30)
+done()

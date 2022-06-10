@@ -29,6 +29,7 @@ class Game:
             if edge.i2 not in player.vertices:
                 player.vertices.append(edge.i2)
             player.resources += self.map.get_resources(vertex)
+            print(player.information())
 
     def start(self):
         print(self.map)
@@ -65,7 +66,7 @@ class Game:
 
                 elif choice == "4":
                     print(player.information())
-                    print(self.map)
+                    # print(self.map)
 
                 elif choice == "0":
                     break
@@ -160,13 +161,13 @@ class Game:
         grid = self.map.grid
         for key in grid:
             lattice = grid[key]
+            resources = lattice.resource
             if lattice.num == number and not lattice.isRobbed:
                 for n in range(6):
                     vertex_sign = (lattice.x, lattice.y, n)
                     vertex = self.map.vertices[vertex_sign].find_root_vertex()
                     for player in self.players:
                         if vertex in player.house:
-                            player.resources += lattice.resource
+                            player.add_resources(resources, 1)
                         elif vertex in player.city:
-                            player.resources += lattice.resource
-                            player.resources += lattice.resource
+                            player.add_resources(resources, 2)
